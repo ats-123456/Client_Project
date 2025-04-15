@@ -37,10 +37,19 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default='your-default-insecure-key')
 
 # ALLOWED_HOSTS = []
 
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True
 # ALLOWED_HOSTS = ['*']
 
 ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
+
+MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    ...
+]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
