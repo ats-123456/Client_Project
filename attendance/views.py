@@ -17,6 +17,14 @@ class AttendanceViewSet(viewsets.ModelViewSet):
 from django.http import JsonResponse
 import requests
 
+# attendance/views.py
+
+from attendance.models import Student  # or from the view logic directly
+from attendance.serializers import StudentSerializer
+from django.http import JsonResponse
+
 def test_api_view(request):
-    students = requests.get("https://attendance-ghip.onrender.com/students/").json()
-    return JsonResponse({"students": students})
+    students = Student.objects.all()
+    serialized = StudentSerializer(students, many=True)
+    return JsonResponse(serialized.data, safe=False)
+
