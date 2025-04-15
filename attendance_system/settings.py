@@ -37,6 +37,15 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default='your-default-insecure-key')
 
 # ALLOWED_HOSTS = []
 
+
+import os
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+
+
+
 DEBUG = True
 # ALLOWED_HOSTS = ['*']
 

@@ -14,3 +14,7 @@ services:
 
       - key: DEBUG
         value: False
+static:
+  - name: static
+    path: /static
+    dir: staticfiles
