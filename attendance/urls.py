@@ -6,3 +6,9 @@ router.register(r'students', StudentViewSet)
 router.register(r'attendance', AttendanceViewSet)
 
 urlpatterns = router.urls
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path("test-api/", views.test_api_view),
+] + router.urls
