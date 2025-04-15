@@ -38,8 +38,9 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default='your-default-insecure-key')
 # ALLOWED_HOSTS = []
 
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
 
+ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
