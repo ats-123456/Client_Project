@@ -11,4 +11,5 @@ from . import views
 
 urlpatterns = [
     path("test-api/", views.test_api_view),
+     path('register/', views.register_user, name='register_user'),
 ] + router.urls
