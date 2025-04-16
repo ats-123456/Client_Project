@@ -12,6 +12,12 @@ class UserProfile(models.Model):
 
 
 
+from django.core.exceptions import ValidationError
+
+
+
+
+
 
 CATEGORY_CHOICES = [
         ('a', 'A'),
@@ -20,7 +26,7 @@ CATEGORY_CHOICES = [
     ]
 
 class classroom(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30,unique=True)
 
     def __str__(self):
         return self.name
@@ -31,6 +37,21 @@ class Year(models.Model):
     section = models.CharField(max_length=30,choices=CATEGORY_CHOICES,default='a')
 
 
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['cname', 'year', 'section'], name='unique_class_year_section')
+        ]
+
+    def clean(self):
+        if Year.objects.filter(cname=self.cname, year=self.year, section=self.section).exclude(pk=self.pk).exists():
+            raise ValidationError("This combination of class, year, and section already exists.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()  # This calls clean() before saving
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return self.cname.name
+        return f"{self.cname.name} - {self.year} - {self.section}"
+
 
