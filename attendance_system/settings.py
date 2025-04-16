@@ -61,6 +61,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -71,6 +72,29 @@ INSTALLED_APPS = [
     'attendance',
      'corsheaders',
 ]
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "My Project Admin",
+    "site_header": "My Project Admin Panel",
+    "site_brand": "MyBrand",
+    "welcome_sign": "Welcome to My Project Admin",
+    "copyright": "My Company",
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "user_avatar": None,
+
+    # Optional icons for your apps/models
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+    },
+}
+
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
