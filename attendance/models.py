@@ -6,10 +6,10 @@ class Staff(models.Model):
         ('hod', 'HOD'),
     )
 
-    username = models.CharField(max_length=150, unique=True)
+    username = models.CharField(max_length=150)
     password = models.CharField(max_length=128)  # Will be hashed
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
-    staff_id = models.CharField(max_length=20, blank=True, null=True)
+    staff_id = models.CharField(max_length=20, blank=True, null=True,unique=True)
     hod_id = models.CharField(max_length=20, blank=True, null=True)
 
 
