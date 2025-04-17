@@ -40,7 +40,7 @@ class classroom(models.Model):
 
 class Year(models.Model):
     cname = models.ForeignKey(classroom, on_delete=models.CASCADE)
-    year = models.CharField(max_length=30,choices=years)
+    year = models.CharField(max_length=30, choices=years)
     section = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='a')
 
     class Meta:
@@ -52,16 +52,13 @@ class Year(models.Model):
         if Year.objects.filter(
             cname=self.cname,
             section=self.section,
-            year__iexact=self.year
+            year__iexact=self.year  # case-insensitive check
         ).exclude(pk=self.pk).exists():
             raise ValidationError("This combination of class, year, and section already exists (case-insensitive).")
 
     def save(self, *args, **kwargs):
-        self.year = self.year.lower()  # normalize year
-        self.full_clean()
+        self.full_clean()  # just this, don't lower the year
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.cname.name} - {self.year} - {self.section}"
-
-
