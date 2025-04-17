@@ -36,8 +36,17 @@ class classroom(models.Model):
     name = models.CharField(max_length=30,unique=True)
 
 
+    def clean(self):
+        if classroom.objects.filter(
+            name=self.name,
+        ).exclude(pk=self.pk).exists():
+            raise ValidationError("This combination of class,  already exists (case-insensitive).")
+
+
+
     def save(self,*args,**kwargs):
         self.name = self.name.lower()
+        self.full_clean() 
         super().save(*args,**kwargs)
 
 
