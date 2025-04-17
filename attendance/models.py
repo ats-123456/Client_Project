@@ -33,24 +33,17 @@ years = [
 ] 
 
 class classroom(models.Model):
-    name = models.CharField(max_length=30,unique=True)
-
+    name = models.CharField(max_length=30)  # Removed unique=True
 
     def clean(self):
-        if classroom.objects.filter(
-            name=self.name,
-        ).exclude(pk=self.pk).exists():
-            raise ValidationError("This combination of class,  already exists (case-insensitive).")
+        # Case-insensitive uniqueness check
+        if classroom.objects.filter(name__iexact=self.name).exclude(pk=self.pk).exists():
+            raise ValidationError({'__all__': ["This classroom name already exists (case-insensitive)."]})
 
-
-
-    def save(self,*args,**kwargs):
-        self.name = self.name.lower()
-        self.full_clean() 
-        super().save(*args,**kwargs)
-
-
-
+    def save(self, *args, **kwargs):
+        self.name = self.name.lower()  # normalize input
+        self.full_clean()  # runs the clean() method
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
