@@ -26,6 +26,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import AuthenticationFailed
 
+
 class StaffTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
@@ -37,3 +38,5 @@ class StaffTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class StaffTokenObtainPairView(TokenObtainPairView):
     serializer_class = StaffTokenObtainPairSerializer
+
+

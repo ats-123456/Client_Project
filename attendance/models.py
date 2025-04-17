@@ -25,6 +25,13 @@ CATEGORY_CHOICES = [
         ('c', 'C'),
     ]
 
+years = [
+    ('1st Year','1st Year'),
+    ('2nd Year','2nd Year'),
+    ('3rd Year','3rd Year'),
+    ('4th Year','4th Year')
+] 
+
 class classroom(models.Model):
     name = models.CharField(max_length=30,unique=True)
 
@@ -32,11 +39,9 @@ class classroom(models.Model):
         return self.name
 
 class Year(models.Model):
-    cname = models.ForeignKey(classroom,on_delete=models.CASCADE)
-    year = models.CharField(max_length=30)
-    section = models.CharField(max_length=30,choices=CATEGORY_CHOICES,default='a')
-
-
+    cname = models.ForeignKey(classroom, on_delete=models.CASCADE)
+    year = models.CharField(max_length=30,choices=years)
+    section = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='a')
 
     class Meta:
         constraints = [
@@ -44,11 +49,16 @@ class Year(models.Model):
         ]
 
     def clean(self):
-        if Year.objects.filter(cname=self.cname, year=self.year, section=self.section).exclude(pk=self.pk).exists():
-            raise ValidationError("This combination of class, year, and section already exists.")
+        if Year.objects.filter(
+            cname=self.cname,
+            section=self.section,
+            year__iexact=self.year
+        ).exclude(pk=self.pk).exists():
+            raise ValidationError("This combination of class, year, and section already exists (case-insensitive).")
 
     def save(self, *args, **kwargs):
-        self.full_clean()  # This calls clean() before saving
+        self.year = self.year.lower()  # normalize year
+        self.full_clean()
         super().save(*args, **kwargs)
 
     def __str__(self):
