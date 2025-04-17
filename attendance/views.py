@@ -48,11 +48,18 @@ class LoginView(APIView):
 
 from .models import StaffAssignment
 from .serializers import StaffAssignmentSerializer
+from rest_framework.permissions import IsAuthenticated
+class StaffClassAssignmentsView(APIView):
+    permission_classes = [IsAuthenticated]
 
-class StaffAssignmentViewSet(viewsets.ModelViewSet):
-    queryset = StaffAssignment.objects.all()
-    serializer_class = StaffAssignmentSerializer
-
+    def get(self, request):
+        try:
+            staff_user = Staff.objects.get(username=request.user.username)
+            assignments = StaffAssignment.objects.filter(staff=staff_user)
+            serializer = StaffAssignmentSerializer(assignments, many=True)
+            return Response(serializer.data)
+        except Staff.DoesNotExist:
+            return Response({"error": "Staff not found"}, status=404)
 
 
 
