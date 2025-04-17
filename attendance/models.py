@@ -29,6 +29,9 @@ class Staff(models.Model):
 
 
 
+
+
+
 from django.contrib.auth.models import User  # This is important!
 
 class UserProfile(models.Model):
@@ -117,3 +120,14 @@ class Year(models.Model):
 
     def __str__(self):
         return f"{self.cname.name} - {self.year} - {self.section}"
+
+
+class StaffAssignment(models.Model):
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    assigned_class = models.ForeignKey(Year, on_delete=models.CASCADE)  # This includes class, year, and section
+
+    class Meta:
+        unique_together = ('staff', 'assigned_class')  # Prevents duplicate assignments
+
+    def __str__(self):
+        return f"{self.staff.username} -> {self.assigned_class}"
