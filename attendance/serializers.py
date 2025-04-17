@@ -11,17 +11,17 @@ class LoginSerializer(serializers.Serializer):
 
 
 
-from rest_framework import serializers
-from .models import StaffAssignment
+# from rest_framework import serializers
+# from .models import StaffAssignment
 
-class StaffAssignmentSerializer(serializers.ModelSerializer):
-    class_name = serializers.CharField(source='assigned_class.cname.name', read_only=True)
-    year = serializers.CharField(source='assigned_class.year', read_only=True)
-    section = serializers.CharField(source='assigned_class.section', read_only=True)
+# class StaffAssignmentSerializer(serializers.ModelSerializer):
+#     class_name = serializers.CharField(source='assigned_class.cname.name', read_only=True)
+#     year = serializers.CharField(source='assigned_class.year', read_only=True)
+#     section = serializers.CharField(source='assigned_class.section', read_only=True)
 
-    class Meta:
-        model = StaffAssignment
-        fields = ['id', 'class_name', 'year', 'section']
+#     class Meta:
+#         model = StaffAssignment
+#         fields = ['id', 'class_name', 'year', 'section']
 
 
 

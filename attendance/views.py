@@ -46,20 +46,20 @@ class LoginView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-from .models import StaffAssignment
-from .serializers import StaffAssignmentSerializer
-from rest_framework.permissions import IsAuthenticated
-class StaffClassAssignmentsView(APIView):
-    # permission_classes = [IsAuthenticated]
+# from .models import StaffAssignment
+# from .serializers import StaffAssignmentSerializer
+# from rest_framework.permissions import IsAuthenticated
+# class StaffClassAssignmentsView(APIView):
+#     # permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        try:
-            staff_user = Staff.objects.get(username=request.user.username)
-            assignments = StaffAssignment.objects.filter(staff=staff_user)
-            serializer = StaffAssignmentSerializer(assignments, many=True)
-            return Response(serializer.data)
-        except Staff.DoesNotExist:
-            return Response({"error": "Staff not found"}, status=404)
+#     def get(self, request):
+#         try:
+#             staff_user = Staff.objects.get(username=request.user.username)
+#             assignments = StaffAssignment.objects.filter(staff=staff_user)
+#             serializer = StaffAssignmentSerializer(assignments, many=True)
+#             return Response(serializer.data)
+#         except Staff.DoesNotExist:
+#             return Response({"error": "Staff not found"}, status=404)
 
 
 
