@@ -50,7 +50,7 @@ from .models import StaffAssignment
 from .serializers import StaffAssignmentSerializer
 from rest_framework.permissions import IsAuthenticated
 class StaffClassAssignmentsView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
