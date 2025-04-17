@@ -44,6 +44,14 @@ class LoginView(APIView):
                 return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+from .models import StaffAssignment
+from .serializers import StaffAssignmentSerializer
+
+class StaffAssignmentViewSet(viewsets.ModelViewSet):
+    queryset = StaffAssignment.objects.all()
+    serializer_class = StaffAssignmentSerializer
 
 
 
