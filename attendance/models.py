@@ -1,14 +1,59 @@
 from django.db import models
-from django.contrib.auth.models import User
-from django.db import models
+from django.contrib.auth.hashers import make_password, check_password
+class Staff(models.Model):
+    ROLE_CHOICES = (
+        ('staff', 'Staff'),
+        ('hod', 'HOD'),
+    )
+
+    username = models.CharField(max_length=150, unique=True)
+    password = models.CharField(max_length=128)  # Will be hashed
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    staff_id = models.CharField(max_length=20, blank=True, null=True)
+    hod_id = models.CharField(max_length=20, blank=True, null=True)
+
+
+    def save(self, *args, **kwargs):
+        # Hash the password only if it's not already hashed
+        if not self.password.startswith('pbkdf2_'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+
+
+    def check_password(self, raw_password):
+        return check_password(raw_password, self.password)
+
+
+    def __str__(self):
+        return f"{self.username} - {self.role}"
+
+
+
+from django.contrib.auth.models import User  # This is important!
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)  # This is correct
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     address = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.user.username
+
+
+
+
+
+
+
+
+
+# class UserProfile(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     phone_number = models.CharField(max_length=15, null=True, blank=True)
+#     address = models.TextField(null=True, blank=True)
+
+#     def __str__(self):
+#         return self.user.username
 
 
 
