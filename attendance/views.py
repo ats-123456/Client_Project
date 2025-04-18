@@ -242,6 +242,40 @@ class StaffAssignmentViewSet(viewsets.ModelViewSet):
 
 
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Student, Year
+from .serializers import StudentSerializer
+
+class StudentsByClassView(APIView):
+    def get(self, request):
+        class_id = request.query_params.get('class_id')
+        if class_id is not None:
+            try:
+                year_obj = Year.objects.get(id=class_id)
+                students = Student.objects.filter(class_info=year_obj)
+                serializer = StudentSerializer(students, many=True)
+                return Response({
+                    'class': str(year_obj),
+                    'total_students': students.count(),
+                    'students': serializer.data
+                }, status=status.HTTP_200_OK)
+            except Year.DoesNotExist:
+                return Response({'error': 'Class not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'class_id query parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+#http://127.0.0.1:8000/api/students-by-class/?class_id=1
+#GET /students-by-class/?class_id=<year_id>
+
+
+
+
+
+
+
+
+
 #_____________________________________________________________________________
 
 # @api_view(['POST'])
@@ -277,5 +311,7 @@ class StaffAssignmentViewSet(viewsets.ModelViewSet):
 
 # class StaffTokenObtainPairView(TokenObtainPairView):
 #     serializer_class = StaffTokenObtainPairSerializer
+
+
 
 

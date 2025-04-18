@@ -32,12 +32,13 @@ from rest_framework import routers
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import StaffLoginView, StaffAssignmentViewSet
+from .views import StaffLoginView, StaffAssignmentViewSet,StudentsByClassView
 
 router = DefaultRouter()
 router.register(r'staff-assignments', StaffAssignmentViewSet, basename='staff-assignment')
 
 urlpatterns = [
     path('login/', StaffLoginView.as_view(), name='staff-login'),
+    path('students-by-class/', StudentsByClassView.as_view(), name='students-by-class'),
     path('', include(router.urls)),
 ]
