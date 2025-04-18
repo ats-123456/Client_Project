@@ -93,6 +93,7 @@ JAZZMIN_SETTINGS = {
     },
 }
 
+# AUTH_USER_MODEL = 'attendance.Staff'
 
 
 REST_FRAMEWORK = {
@@ -104,6 +105,10 @@ REST_FRAMEWORK = {
     )
     
 }
+
+
+
+
 
 MIDDLEWARE = [
     

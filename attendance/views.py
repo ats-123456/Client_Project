@@ -13,8 +13,48 @@ from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Staff
 from .serializers import LoginSerializer
+#___________________________________old________________________________________
+# class LoginView(APIView):
+#     def post(self, request):
+#         serializer = LoginSerializer(data=request.data)
+#         if serializer.is_valid():
+#             username = serializer.validated_data['username']
+#             password = serializer.validated_data['password']
 
-class LoginView(APIView):
+#             try:
+#                 user = Staff.objects.get(username=username)
+#                 if check_password(password, user.password):
+#                     # Generate JWT token
+#                     refresh = RefreshToken.for_user(user)
+                    
+#                     data = {
+#                         'message': 'Login successful',
+#                         'username': user.username,
+#                         'role': user.role,
+#                         'user_id': user.s_id,
+#                         'staff_id': user.staff_id,
+#                         'hod_id': user.hod_id,
+#                         'access_token': str(refresh.access_token),
+#                         'refresh_token': str(refresh)
+#                     }
+#                     return Response(data, status=status.HTTP_200_OK)
+#                 else:
+#                     return Response({'error': 'Invalid password'}, status=status.HTTP_401_UNAUTHORIZED)
+#             except Staff.DoesNotExist:
+#                 return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#_______________________________old______________________________________________________
+# 
+# __________________________________new_____________________________________________
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import Staff
+from .serializers import LoginSerializer
+
+class StaffLoginView(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -23,28 +63,31 @@ class LoginView(APIView):
 
             try:
                 user = Staff.objects.get(username=username)
-                if check_password(password, user.password):
-                    # Generate JWT token
-                    refresh = RefreshToken.for_user(user)
-                    
-                    data = {
+                if user.check_password(password):  # Uses your custom check_password method
+                    # Manually create a token for this custom user
+                    refresh = RefreshToken()
+                    refresh['username'] = user.username
+                    refresh['s_id'] = user.s_id
+                    refresh['role'] = user.role
+
+                    return Response({
                         'message': 'Login successful',
                         'username': user.username,
-                        'role': user.role,
                         'user_id': user.s_id,
-                        'staff_id': user.staff_id,
-                        'hod_id': user.hod_id,
+                        'role': user.role,
                         'access_token': str(refresh.access_token),
-                        'refresh_token': str(refresh)
-                    }
-                    return Response(data, status=status.HTTP_200_OK)
+                        'refresh_token': str(refresh),
+                        'staff_id': user.staff_id,
+                        'hod_id': user.hod_id
+                    }, status=status.HTTP_200_OK)
                 else:
                     return Response({'error': 'Invalid password'}, status=status.HTTP_401_UNAUTHORIZED)
             except Staff.DoesNotExist:
                 return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-        
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+#__________________________________________new___ 
 
 from .models import StaffAssignment
 from .serializers import StaffAssignmentSerializer
@@ -54,21 +97,73 @@ from .models import StaffAssignment
 from .serializers import StaffAssignmentSerializer
 from rest_framework import viewsets
 
-class StaffAssignmentViewSet(viewsets.ModelViewSet):
-    serializer_class = StaffAssignmentSerializer
+# class StaffAssignmentViewSet(viewsets.ModelViewSet):
+#     serializer_class = StaffAssignmentSerializer
     
-    def get_queryset(self):
-        s_id = self.request.query_params.get('s_id')  # Use 'id' query parameter for filtering
-        print(s_id)
-        if s_id:
-            # Filter by the related staff's 's_id' field, not the 'id' of StaffAssignment
-            return StaffAssignment.objects.filter(staff__s_id=s_id)  # Filter by related staff's s_id
+#     def get_queryset(self):
+#         s_id = self.request.query_params.get('s_id')  # Use 'id' query parameter for filtering
+#         print(s_id)
+#         if s_id:
+#             # Filter by the related staff's 's_id' field, not the 'id' of StaffAssignment
+#             return StaffAssignment.objects.filter(staff__s_id=s_id)  # Filter by related staff's s_id
+
+#         return StaffAssignment.objects.all()
+
+
+
+
+
+
+# class StaffAssignmentViewSet(viewsets.ModelViewSet):
+#     serializer_class = StaffAssignmentSerializer
+
+#     def get_queryset(self):
+#         user = self.request.user
+#         print("Logged-in user:", user)
+
+#         # Only return assignments related to the logged-in staff user
+#         return StaffAssignment.objects.filter(staff__s_id=user.s_id)
+
+
+
+
+
+# from rest_framework.decorators import api_view, permission_classes
+# from rest_framework.permissions import IsAuthenticated
+# from rest_framework.response import Response
+
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def get_user_data(request):
+#     user = request.user  # JWT token la irukura user
+#     return Response({
+#         'username': user.username,
+#         'email': user.email,
+#         'id': user.id,
+#         'is_staff': user.is_staff,
+#     })
+
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .models import Staff
+from rest_framework import status
+
+class StaffAssignmentViewSet(viewsets.ModelViewSet):
+   serializer_class = StaffAssignmentSerializer
+
+   def get_queryset(self):
+        s_id = self.request.query_params.get('s_id')
+
+        if s_id is not None:
+            try:
+                s_id = int(s_id)
+                return StaffAssignment.objects.filter(staff__s_id=s_id)
+            except ValueError:
+                return StaffAssignment.objects.none()  # Or raise a validation error
 
         return StaffAssignment.objects.all()
-
-
-
-
 
 
 
