@@ -28,7 +28,8 @@ from rest_framework import serializers
 #         }
 
 from rest_framework import serializers
-from .models import StaffAssignment
+from .models import StaffAssignment,Student
+
 
 class StaffAssignmentSerializer(serializers.ModelSerializer):
     staff_username = serializers.CharField(source='staff.username', read_only=True)
@@ -43,6 +44,18 @@ class StaffAssignmentSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'assigned_class': {'write_only': True}
         }
+
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['student_id','name','roll_number','email','class_info']
+
+
+
+
+
 
 
 

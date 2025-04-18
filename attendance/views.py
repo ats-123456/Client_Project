@@ -150,22 +150,91 @@ from rest_framework.views import APIView
 from .models import Staff
 from rest_framework import status
 
+# class StaffAssignmentViewSet(viewsets.ModelViewSet):
+#    serializer_class = StaffAssignmentSerializer
+
+#    def get_queryset(self):
+#         s_id = self.request.query_params.get('s_id')
+
+#         if s_id is not None:
+#             try:
+#                 s_id = int(s_id)
+#                 r=StaffAssignment.objects.filter(staff__s_id=s_id)
+#                 for i in  r:
+#                     s_id=i.staff.s_id
+#                     name=i.staff.username
+#                     rol=i.staff.role
+#                     sid=i.staff.staff_id
+#                     hid=i.staff.hod_id
+#                     classn=i.assigned_class
+
+#                 print(name,rol,sid,hid)
+
+#                 # return StaffAssignment.objects.filter(staff__s_id=s_id)
+#                 return Response({
+#                      's_id':s_id,
+#                      'classname':classn,
+                        
+#                         'username': name,
+#                         'role': rol,
+                      
+#                         'staff_id': sid,
+#                         'hod_id': hid,
+
+
+
+#                     }, status=status.HTTP_200_OK)
+            
+#             except ValueError:
+#                 return StaffAssignment.objects.none()  # Or raise a validation error
+
+#         return StaffAssignment.objects.all()
+
+
+from rest_framework.response import Response
+from rest_framework import status, viewsets
+from .models import StaffAssignment
+from .serializers import StaffAssignmentSerializer
+
 class StaffAssignmentViewSet(viewsets.ModelViewSet):
-   serializer_class = StaffAssignmentSerializer
+    serializer_class = StaffAssignmentSerializer
 
-   def get_queryset(self):
+    def get_queryset(self):
+        # Return the basic queryset here
         s_id = self.request.query_params.get('s_id')
-
         if s_id is not None:
             try:
                 s_id = int(s_id)
                 return StaffAssignment.objects.filter(staff__s_id=s_id)
             except ValueError:
-                return StaffAssignment.objects.none()  # Or raise a validation error
-
+                return StaffAssignment.objects.none()
         return StaffAssignment.objects.all()
 
+    def list(self, request, *args, **kwargs):
+        s_id = self.request.query_params.get('s_id')
+        if s_id is not None:
+            try:
+                s_id = int(s_id)
+                assignments = StaffAssignment.objects.filter(staff__s_id=s_id)
+                if assignments.exists():
+                    staff = assignments.first().staff  # Get staff details once
+                    class_list = [str(assign.assigned_class) for assign in assignments]
 
+                    return Response({
+                        's_id': staff.s_id,
+                        'username': staff.username,
+                        'role': staff.role,
+                        'staff_id': str(staff.staff_id),
+                        'hod_id': str(staff.hod_id),
+                        'classes': class_list  # all class names
+                    }, status=status.HTTP_200_OK)
+                else:
+                    return Response({'detail': 'No assignment found'}, status=status.HTTP_404_NOT_FOUND)
+            except ValueError:
+                return Response({'error': 'Invalid s_id'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Default behavior
+        return super().list(request, *args, **kwargs)
 
 
 

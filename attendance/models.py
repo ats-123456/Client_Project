@@ -138,3 +138,17 @@ class StaffAssignment(models.Model):
 
     def __str__(self):
         return f"{self.staff.username} -> {self.assigned_class}"
+
+
+
+
+
+class Student(models.Model):
+    student_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    roll_number = models.CharField(max_length=20)
+    email = models.EmailField()
+    class_info = models.ForeignKey(Year, on_delete=models.CASCADE)  # same as assigned_class
+
+    def __str__(self):
+        return f"{self.name} - {self.roll_number}"
