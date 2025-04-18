@@ -1,11 +1,12 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password, check_password
 class Staff(models.Model):
+
     ROLE_CHOICES = (
         ('staff', 'Staff'),
         ('hod', 'HOD'),
     )
-
+    s_id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=150)
     password = models.CharField(max_length=128)  # Will be hashed
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
@@ -18,6 +19,8 @@ class Staff(models.Model):
         if not self.password.startswith('pbkdf2_'):
             self.password = make_password(self.password)
         super().save(*args, **kwargs)
+
+    
 
 
     def check_password(self, raw_password):

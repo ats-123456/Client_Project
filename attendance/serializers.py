@@ -12,6 +12,22 @@ class LoginSerializer(serializers.Serializer):
 
 
 from rest_framework import serializers
+# from .models import StaffAssignment
+
+# class StaffAssignmentSerializer(serializers.ModelSerializer):
+#     staff_username = serializers.CharField(source='staff.username', read_only=True)
+#     class_name = serializers.CharField(source='assigned_class.cname.name', read_only=True)
+#     year = serializers.CharField(source='assigned_class.year', read_only=True)
+#     section = serializers.CharField(source='assigned_class.section', read_only=True)
+
+#     class Meta:
+#         model = StaffAssignment
+#         fields = ['s_id', 'staff', 'staff_username', 'assigned_class', 'class_name', 'year', 'section']
+#         extra_kwargs = {
+#             'assigned_class': {'write_only': True}
+#         }
+
+from rest_framework import serializers
 from .models import StaffAssignment
 
 class StaffAssignmentSerializer(serializers.ModelSerializer):
@@ -19,11 +35,14 @@ class StaffAssignmentSerializer(serializers.ModelSerializer):
     class_name = serializers.CharField(source='assigned_class.cname.name', read_only=True)
     year = serializers.CharField(source='assigned_class.year', read_only=True)
     section = serializers.CharField(source='assigned_class.section', read_only=True)
+    s_id = serializers.CharField(source='staff.s_id', read_only=True)  # Add s_id field to be serialized
 
     class Meta:
         model = StaffAssignment
-        fields = ['id', 'staff', 'staff_username', 'assigned_class', 'class_name', 'year', 'section']
-
+        fields = ['s_id', 'staff', 'staff_username', 'assigned_class', 'class_name', 'year', 'section']
+        extra_kwargs = {
+            'assigned_class': {'write_only': True}
+        }
 
 
 

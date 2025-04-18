@@ -49,9 +49,23 @@ class LoginView(APIView):
 from .models import StaffAssignment
 from .serializers import StaffAssignmentSerializer
 
+  
+from .models import StaffAssignment
+from .serializers import StaffAssignmentSerializer
+from rest_framework import viewsets
+
 class StaffAssignmentViewSet(viewsets.ModelViewSet):
-    queryset = StaffAssignment.objects.all()
     serializer_class = StaffAssignmentSerializer
+    
+    def get_queryset(self):
+        s_id = self.request.query_params.get('id')  # Use 'id' query parameter for filtering
+        print(s_id)
+        if s_id:
+            # Filter by the related staff's 's_id' field, not the 'id' of StaffAssignment
+            return StaffAssignment.objects.filter(staff__s_id=s_id)  # Filter by related staff's s_id
+
+        return StaffAssignment.objects.all()
+
 
 
 
