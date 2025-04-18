@@ -31,7 +31,7 @@ class LoginView(APIView):
                         'message': 'Login successful',
                         'username': user.username,
                         'role': user.role,
-                        'user_id': user.id,
+                        'user_id': user.s_id,
                         'staff_id': user.staff_id,
                         'hod_id': user.hod_id,
                         'access_token': str(refresh.access_token),
@@ -58,7 +58,7 @@ class StaffAssignmentViewSet(viewsets.ModelViewSet):
     serializer_class = StaffAssignmentSerializer
     
     def get_queryset(self):
-        s_id = self.request.query_params.get('id')  # Use 'id' query parameter for filtering
+        s_id = self.request.query_params.get('s_id')  # Use 'id' query parameter for filtering
         print(s_id)
         if s_id:
             # Filter by the related staff's 's_id' field, not the 'id' of StaffAssignment

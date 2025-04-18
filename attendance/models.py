@@ -13,6 +13,10 @@ class Staff(models.Model):
     staff_id = models.CharField(max_length=20, blank=True, null=True,unique=True)
     hod_id = models.CharField(max_length=20, blank=True, null=True)
 
+    @property
+    def id(self):  # ✅ Add this property
+        return self.s_id
+
 
     def save(self, *args, **kwargs):
         # Hash the password only if it's not already hashed
